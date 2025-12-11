@@ -1,64 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { MATCH_EVENTS_DAY } from "@/lib/data/constant-api-path";
-
-type ApiMatch = {
-  idEvent: string;
-  strEvent: string;
-  strHomeTeam: string;
-  strAwayTeam: string;
-  intHomeScore: string | null;
-  intAwayScore: string | null;
-  strStatus: string;
-  dateEvent: string;
-  strTime: string;
-  strLeague: string;
-  strHomeTeamBadge: string;
-  strAwayTeamBadge: string;
-  idHomeTeam: string;
-  idAwayTeam: string;
-};
-
-type MatchesApiResponse = {
-  events: ApiMatch[] | null;
-};
-
-type MatchStatus = "live" | "finished" | "scheduled";
-
-type NormalizedMatch = {
-  id: string;
-  homeTeam: {
-    id: string;
-    name: string;
-    logo: string;
-    shortName: string;
-  };
-  awayTeam: {
-    id: string;
-    name: string;
-    logo: string;
-    shortName: string;
-  };
-  homeScore: number;
-  awayScore: number;
-  status: MatchStatus;
-  date: string;
-  time?: string;
-  league: string;
-};
-
-type GroupedMatches = {
-  [league: string]: NormalizedMatch[];
-};
-
-type UseFetchMatchesResult = {
-  matches: NormalizedMatch[];
-  groupedMatches: GroupedMatches;
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
-  retry: () => void;
-};
+import type {
+  GroupedMatches,
+  MatchesApiResponse,
+  MatchStatus,
+  NormalizedMatch,
+  UseFetchMatchesResult,
+} from "@/types/match.types";
 
 const useFetchMatches = (
   date: string,
@@ -97,7 +46,7 @@ const useFetchMatches = (
 
   const fetchOnce = useCallback(
     async (signal?: AbortSignal) => {
-      const url = `${MATCH_EVENTS_DAY}/eventsday.php?d=${date}&s=${sport}`;
+      const url = `${MATCH_EVENTS_DAY}d=${date}&s=${sport}`;
       const response = await axios.get<MatchesApiResponse>(url, {
         timeout: 10000,
         signal,

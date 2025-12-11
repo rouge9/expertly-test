@@ -25,8 +25,6 @@ export const MatchesProvider = ({ children }: { children: ReactNode }) => {
     ? { [selectedLeague.name]: allMatches[selectedLeague.name] || [] }
     : allMatches;
 
-  console.log(groupedMatches);
-
   return (
     <MatchesContext.Provider
       value={{

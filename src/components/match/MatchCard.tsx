@@ -2,8 +2,15 @@ import { MoreVertical } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { cn } from "@/lib/utils";
 import type { MatchCardProps } from "@/types/match.types";
+import { useNavigate } from "react-router-dom";
 
 export function MatchCard({ match, showTime = false }: MatchCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/match/${match.id}`);
+  };
+
   const getStatusBadge = () => {
     switch (match.status) {
       case "live":
@@ -20,7 +27,7 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
   return (
     <div
       className={cn(
-        "bg-muted p-4 hover:bg-gray-750 transition-colors border-b border-b-muted-foreground relative",
+        "bg-muted p-4 hover:bg-muted-foreground/20 transition-colors border-b border-b-muted-foreground relative cursor-pointer",
         match.status === "finished"
           ? "border-l-4 border-l-red-500 shadow-[inset_8px_0_12px_-8px_rgba(239,68,68,0.3)]"
           : match.status === "live"
@@ -29,7 +36,7 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
       )}
     >
       <div className="flex items-center justify-between gap-5">
-        <div className="flex items-center gap-3 flex-1">
+        <div className="flex items-center gap-3 flex-1" onClick={handleClick}>
           <div className="flex items-center gap-2 min-w-[60px]">
             {getStatusBadge()}
           </div>
@@ -52,7 +59,9 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
                   {match.homeTeam.name}
                 </span>
               </div>
-              <span className="text-white font-bold">{match.homeScore}</span>
+              <span className="text-white font-bold">
+                {match?.status !== "scheduled" && match.homeScore}
+              </span>
             </div>
 
             <div className="flex items-center justify-between">
@@ -72,12 +81,19 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
                   {match.awayTeam.name}
                 </span>
               </div>
-              <span className="text-white font-bold">{match.awayScore}</span>
+              <span className="text-white font-bold">
+                {match?.status !== "scheduled" && match.awayScore}
+              </span>
             </div>
           </div>
         </div>
 
-        <MoreVertical className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer" />
+        <MoreVertical
+          className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer"
+          onClick={() => {
+            console.log("clicked");
+          }}
+        />
       </div>
     </div>
   );

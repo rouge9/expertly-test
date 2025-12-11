@@ -1,54 +1,34 @@
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import EventTimeline from "./EventTimeline";
+import { useParams } from "react-router-dom";
+import useMatchDetail from "@/hooks/useMatchDetail";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { formatDate } from "@/lib/utils";
 
 export function MatchDetails() {
-  const mockEvents = [
-    {
-      time: "89'",
-      eventType: "pass",
-      awayPlayer: "Gyakores",
-      awayTeam: "Arsenal",
-    },
-    {
-      time: "88'",
-      eventType: "substitution",
-      homePlayer: "Eklilke",
-      homeStatus: "Sallah",
-      homeTeam: "Liverpool",
-    },
-    {
-      time: "78'",
-      eventType: "card",
-      card: "yellow",
-      awayPlayer: "Saliba",
-      awayTeam: "Arsenal",
-    },
-    { time: "74'" },
-    {
-      time: "67'",
-      eventType: "pass",
-      awayPlayer: "Rice",
-      awayTeam: "Arsenal",
-    },
-    {
-      time: "66'",
-      eventType: "card",
-      card: "red",
-      homePlayer: "Van Dijk",
-      homeTeam: "Liverpool",
-    },
-    {
-      time: "55'",
-      eventType: "substitution",
-      awayPlayer: "Saka",
-      awayTeam: "Arsenal",
-    },
-    { time: "52'", eventType: "corner", awayPlayer: "5th corner" },
-    { time: "48'", eventType: "corner", homePlayer: "3rd Corner" },
-  ];
+  const { id } = useParams<{ id: string }>();
+  const { matchDetail, loading, error } = useMatchDetail(id || "");
+  if (loading) return <div>Loading match details...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!matchDetail) return <div>Match not found</div>;
+
+  console.log(matchDetail);
+
+  const timelineEvents = matchDetail.timeline
+    .slice()
+    .reverse()
+    .map((event) => ({
+      time: `${event.time}'`,
+      eventType: event.type.toLowerCase(),
+      homePlayer: event.team === "home" ? event.player : null,
+      awayPlayer: event.team === "away" ? event.player : null,
+      detail: event.detail,
+      isHome: event?.isHome,
+    }));
+
   return (
-    <div className="bg-gray-900 min-h-screen text-white">
+    <div className="bg-background min-h-screen text-white">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="bg-muted px-6 pt-6 rounded-lg">
           <div
@@ -57,34 +37,77 @@ export function MatchDetails() {
               window.history.back();
             }}
           >
-            <ArrowLeft className="w-5 h-5 cursor-pointer hover:text-green-400" />
-            <span className="text-gray-300">English Premier league</span>
+            <ArrowLeft className="w-6 h-6 cursor-pointer hover:text-green-400" />
+            <span className="text-gray-300">{matchDetail?.league}</span>
           </div>
 
           <div className="text-center mb-8">
             <div className="flex items-center justify-center lg:gap-28 gap-8 mb-4">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mb-2 mx-auto">
-                  <span className="text-white font-bold text-xl">A</span>
-                </div>
-                <div className="text-yellow-400 text-xs mb-1">⚠️</div>
-                <span className="text-white font-medium">Arsenal</span>
+              <div className="flex flex-col gap-4">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage
+                    src={matchDetail.homeTeam.logo}
+                    alt={matchDetail.homeTeam.name}
+                  />
+                  <AvatarFallback>
+                    <span className="text-white text-xs font-bold">
+                      {matchDetail.homeTeam.name.slice(0, 2)}
+                    </span>
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-lg font-semibold">
+                  {matchDetail?.homeTeam?.name}
+                </span>
               </div>
-
               <div className="text-center">
-                <div className="text-gray-400 text-sm mb-2">11 AUG</div>
-                <div className="lg:text-4xl text-xl font-bold mb-2">2 - 1</div>
-                <Badge variant="finished" className="text-xs">
-                  Finished
+                <div className="text-muted-foreground text-sm mb-2">
+                  {formatDate(matchDetail?.date)}
+                </div>
+                <div className="lg:text-4xl text-xl font-bold mb-2">
+                  <span>
+                    {matchDetail?.status !== "Not Started" &&
+                      matchDetail?.awayScore}
+                  </span>
+                  <span className="mx-2">
+                    {matchDetail?.status === "Not Started" ? "vs" : "-"}
+                  </span>
+                  <span>
+                    {matchDetail?.status !== "Not Started" &&
+                      matchDetail?.homeScore}
+                  </span>
+                </div>
+                <Badge
+                  variant={
+                    matchDetail?.status === "Not Started"
+                      ? "outline"
+                      : matchDetail?.status === "Match Finished"
+                      ? "destructive"
+                      : "default"
+                  }
+                  className="text-xs rounded-xl"
+                >
+                  {matchDetail?.status === "Not Started"
+                    ? "Scheduled"
+                    : matchDetail?.status === "Match Finished"
+                    ? "Finished"
+                    : "Live"}
                 </Badge>
               </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-red-800 rounded-full flex items-center justify-center mb-2 mx-auto">
-                  <span className="text-white font-bold text-xl">L</span>
-                </div>
-                <div className="text-red-500 text-xs mb-1">🔴</div>
-                <span className="text-white font-medium">Liverpool</span>
+              <div className="flex flex-col gap-4">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage
+                    src={matchDetail.awayTeam.logo}
+                    alt={matchDetail.awayTeam.name}
+                  />
+                  <AvatarFallback>
+                    <span className="text-foreground text-xs font-bold">
+                      {matchDetail.awayTeam.name.slice(0, 2)}
+                    </span>
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-lg font-semibold">
+                  {matchDetail?.awayTeam?.name}
+                </span>
               </div>
             </div>
           </div>
@@ -115,10 +138,10 @@ export function MatchDetails() {
           <h3 className="text-lg font-medium mb-4">Events</h3>
           <div className="flex flex-col justify-center items-center">
             <div className="text-center text-gray-400 text-sm mb-4">
-              Fulltime 2 - 1
+              Fulltime {`${matchDetail?.homeScore} - ${matchDetail?.awayScore}`}
             </div>
 
-            <EventTimeline events={mockEvents} />
+            <EventTimeline events={timelineEvents} />
           </div>
         </div>
       </div>
