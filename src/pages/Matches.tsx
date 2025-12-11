@@ -1,5 +1,5 @@
-import React from "react";
+import { Fixtures } from "@/components/Fixtures/Fixtures";
 
 export const Matches = () => {
-  return <div>Matches</div>;
+  return <Fixtures />;
 };

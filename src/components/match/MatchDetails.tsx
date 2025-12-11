@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import EventTimeline from "./match/EventTimeline";
+import EventTimeline from "./EventTimeline";
 
 export function MatchDetails() {
   const mockEvents = [

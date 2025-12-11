@@ -1,13 +1,8 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  CalendarDays,
-  Radio,
-} from "lucide-react";
-import { MatchCard } from "./MatchCard";
+import { ChevronRight, Heart, Radio } from "lucide-react";
+import { MatchCard } from "../match/MatchCard";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { DateSlider } from "./DateSlider";
 
 const mockMatches = [
   {
@@ -76,42 +71,25 @@ const mockMatches = [
 
 export function Fixtures() {
   const navigate = useNavigate();
+
   return (
     <div className="bg-background min-h-screen text-foreground">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <h1 className="hidden md:block text-2xl font-bold mb-8">Matches</h1>
 
-        <div className="hidden md:flex items-center justify-between gap-4 mb-8 bg-muted py-4 rounded-lg px-4">
-          <ChevronLeft className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white" />
-          <div className="flex items-center gap-2">
-            <CalendarDays className="w-5 h-5" />
-            <span className="font-medium">Today</span>
-          </div>
-          <ChevronRight className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white" />
-        </div>
+        <DateSlider />
 
-        <div className="md:hidden flex justify-between items-center mb-6 text-sm px-8 text-center">
-          <span className="text-gray-600">WED 30 AUG</span>
-          <span className="text-gray-400">THU 31 JUL</span>
-          <span className="text-primary font-medium backdrop-blur bg-primary/20 px-3 py-2 rounded-lg">
-            Today 1 AUG
-          </span>
-          <span className="text-gray-400">SAT 2 AUG</span>
-          <span className="text-gray-600">SUN 3 AUG</span>
-          <CalendarDays className="w-8 h-8 text-primary" />
-        </div>
-
-        <div className="flex justify-start gap-4 mb-8">
-          <div className="flex items-center gap-2 bg-primary text-black px-4 py-2 rounded-lg text-sm font-medium">
+        <div className="flex justify-start gap-3 md:gap-4 mb-8">
+          <div className="flex items-center gap-2 bg-primary text-black px-2 md:px-4 py-2 rounded-lg text-sm font-medium">
             <span>All</span>
             <Badge className="bg-black text-white text-xs">9</Badge>
           </div>
-          <div className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg text-sm">
+          <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
             <Radio className="w-4 h-4" />
             <span>Live</span>
             <Badge className="bg-gray-600 text-white text-xs">4</Badge>
           </div>
-          <div className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg text-sm">
+          <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
             <Heart className="w-4 h-4" />
             <span>Favorites</span>
             <Badge className="bg-gray-600 text-white text-xs">2</Badge>
