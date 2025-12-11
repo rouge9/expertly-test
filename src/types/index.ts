@@ -1,3 +1,5 @@
+import type { Match } from "./match.types";
+
 export interface Team {
   id: string;
   name: string;
@@ -5,25 +7,18 @@ export interface Team {
   shortName?: string;
 }
 
-export interface Match {
-  id: string;
-  homeTeam: Team;
-  awayTeam: Team;
-  homeScore: number;
-  awayScore: number;
-  status: 'live' | 'finished' | 'scheduled';
-  date: string;
-  time?: string;
-  league: string;
-  minute?: number;
-}
-
 export interface MatchEvent {
   id: string;
-  type: 'goal' | 'yellow_card' | 'red_card' | 'substitution' | 'corner' | 'offside';
+  type:
+    | "goal"
+    | "yellow_card"
+    | "red_card"
+    | "substitution"
+    | "corner"
+    | "offside";
   minute: number;
   player: string;
-  team: 'home' | 'away';
+  team: "home" | "away";
   description?: string;
 }
 
@@ -31,4 +26,10 @@ export interface League {
   id: string;
   name: string;
   matches: Match[];
+}
+
+export interface DatePickerProps {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currentDate: Date;
+  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
 }

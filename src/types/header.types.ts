@@ -43,7 +43,7 @@ export type UseHeaderOptionsResult = {
 
 export type HeaderDropdownProps = {
   options: HeaderOption[];
-  selected?: HeaderOption;
+  selected?: HeaderOption | null;
   onSelect: (option: HeaderOption) => void;
   fallbackIcon: string;
   fallbackText: string;
@@ -53,7 +53,7 @@ export type HeaderDropdownProps = {
 
 export type LeagueDropdownProps = {
   options: HeaderOption[];
-  selected?: HeaderOption;
-  onSelect: (option: HeaderOption) => void;
+  selected?: HeaderOption | null;
+  onSelect: (option: HeaderOption | null) => void;
   loading?: boolean;
 };

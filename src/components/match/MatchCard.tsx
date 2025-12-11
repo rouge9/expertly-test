@@ -1,10 +1,7 @@
-import type { Match } from "@/types";
 import { MoreVertical } from "lucide-react";
-
-interface MatchCardProps {
-  match: Match;
-  showTime?: boolean;
-}
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { cn } from "@/lib/utils";
+import type { MatchCardProps } from "@/types/match.types";
 
 export function MatchCard({ match, showTime = false }: MatchCardProps) {
   const getStatusBadge = () => {
@@ -21,7 +18,16 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
   };
 
   return (
-    <div className="bg-muted  p-4 hover:bg-gray-750 transition-colors border-l-4 border-red-500 border-b border-b-muted-foreground">
+    <div
+      className={cn(
+        "bg-muted p-4 hover:bg-gray-750 transition-colors border-b border-b-muted-foreground relative",
+        match.status === "finished"
+          ? "border-l-4 border-l-red-500 shadow-[inset_8px_0_12px_-8px_rgba(239,68,68,0.3)]"
+          : match.status === "live"
+          ? "border-l-4 border-l-primary shadow-[inset_8px_0_12px_-8px_rgba(var(--primary),0.3)]"
+          : "border-l-4 border-l-muted-foreground"
+      )}
+    >
       <div className="flex items-center justify-between gap-5">
         <div className="flex items-center gap-3 flex-1">
           <div className="flex items-center gap-2 min-w-[60px]">
@@ -31,9 +37,17 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
           <div className="flex-1 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">A</span>
-                </div>
+                <Avatar className="h-5 w-5">
+                  <AvatarImage
+                    src={match.homeTeam.logo}
+                    alt={match.homeTeam.name}
+                  />
+                  <AvatarFallback>
+                    <span className="text-white text-xs font-bold">
+                      {match.homeTeam.name.slice(0, 2)}
+                    </span>
+                  </AvatarFallback>
+                </Avatar>
                 <span className="text-white text-sm">
                   {match.homeTeam.name}
                 </span>
@@ -43,9 +57,17 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-red-800 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">L</span>
-                </div>
+                <Avatar className="h-5 w-5">
+                  <AvatarImage
+                    src={match.awayTeam.logo}
+                    alt={match.awayTeam.name}
+                  />
+                  <AvatarFallback>
+                    <span className="text-white text-xs font-bold">
+                      {match.homeTeam.name.slice(0, 2)}
+                    </span>
+                  </AvatarFallback>
+                </Avatar>
                 <span className="text-white text-sm">
                   {match.awayTeam.name}
                 </span>

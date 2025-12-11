@@ -27,12 +27,19 @@ export function LeagueDropdown({
             <div className="w-5 h-5 flex justify-center items-center">
               <span className="text-sm font-bold capitalize">
                 {" "}
-                {selected?.name.slice(0, 2) || "En"}{" "}
+                {selected?.name.slice(0, 2) || "ALL"}{" "}
               </span>
             </div>
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 border-muted">
+          <DropdownMenuItem
+            onClick={() => onSelect(null)}
+            className="flex items-center gap-2"
+          >
+            <span>ALL</span>
+          </DropdownMenuItem>
+
           {options.map((option) => (
             <DropdownMenuItem
               key={option.id}
@@ -49,14 +56,19 @@ export function LeagueDropdown({
         <DropdownMenuTrigger asChild>
           <div className="bg-background/20 rounded-full md:p-2 hidden md:flex md:px-4 md:py-3 gap-2 hover:bg-muted cursor-pointer 2xl:min-w-64 justify-between items-center">
             <span className="text-sm font-medium">
-              {loading
-                ? "Loading..."
-                : selected?.name || "English Premier League"}
+              {loading ? "Loading..." : selected?.name || "ALL"}
             </span>
             <ChevronDown className="w-4 h-4 ml-2" />
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 border-muted">
+          <DropdownMenuItem
+            onClick={() => onSelect(null)}
+            className="flex items-center gap-2"
+          >
+            <span>ALL</span>
+          </DropdownMenuItem>
+
           {options.map((option) => (
             <DropdownMenuItem
               key={option.id}

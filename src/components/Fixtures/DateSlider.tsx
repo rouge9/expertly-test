@@ -1,9 +1,10 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { DatePicker } from "./DatePicker";
+import { useMatches } from "@/context/MatchesContext";
 
 export const DateSlider = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const { currentDate, setCurrentDate } = useMatches();
   const [open, setOpen] = useState(false);
 
   const handlePrevDay = () => {

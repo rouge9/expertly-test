@@ -8,23 +8,26 @@ import { Comparison } from "./pages/Comparison";
 import { Statistics } from "./pages/Statistics";
 import { Venues } from "./pages/Venues";
 import { Live } from "./pages/Live";
+import { MatchesProvider } from "./context/MatchesContext";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Live />} />
-          <Route path="matches" element={<Matches />} />
-          <Route path="match/:id" element={<MatchDetail />} />
-          <Route path="standings" element={<Standings />} />
-          <Route path="teams" element={<Teams />} />
-          <Route path="comparison" element={<Comparison />} />
-          <Route path="statistics" element={<Statistics />} />
-          <Route path="venues" element={<Venues />} />
-        </Route>
-      </Routes>
-    </Router>
+    <MatchesProvider>
+      <Router>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Live />} />
+            <Route path="matches" element={<Matches />} />
+            <Route path="match/:id" element={<MatchDetail />} />
+            <Route path="standings" element={<Standings />} />
+            <Route path="teams" element={<Teams />} />
+            <Route path="comparison" element={<Comparison />} />
+            <Route path="statistics" element={<Statistics />} />
+            <Route path="venues" element={<Venues />} />
+          </Route>
+        </Routes>
+      </Router>
+    </MatchesProvider>
   );
 }
 

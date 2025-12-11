@@ -1,76 +1,13 @@
 import { ChevronRight, Heart, Radio } from "lucide-react";
 import { MatchCard } from "../match/MatchCard";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
 import { DateSlider } from "./DateSlider";
-
-const mockMatches = [
-  {
-    id: "1",
-    homeTeam: { id: "1", name: "Arsenal", logo: "", shortName: "ARS" },
-    awayTeam: { id: "2", name: "Valencia", logo: "", shortName: "VAL" },
-    homeScore: 2,
-    awayScore: 1,
-    status: "finished" as const,
-    date: "2024-01-11",
-    league: "UEFA Champions League",
-  },
-  {
-    id: "2",
-    homeTeam: { id: "3", name: "Real Madrid", logo: "", shortName: "RMA" },
-    awayTeam: { id: "4", name: "Leicester City", logo: "", shortName: "LEI" },
-    homeScore: 1,
-    awayScore: 3,
-    status: "finished" as const,
-    date: "2024-01-11",
-    league: "UEFA Champions League",
-  },
-  {
-    id: "3",
-    homeTeam: { id: "1", name: "Arsenal", logo: "", shortName: "ARS" },
-    awayTeam: { id: "5", name: "Manchester City", logo: "", shortName: "MCI" },
-    homeScore: 4,
-    awayScore: 1,
-    status: "live" as const,
-    date: "2024-01-11",
-    league: "English Premier League",
-  },
-  {
-    id: "4",
-    homeTeam: { id: "6", name: "Newcastle United", logo: "", shortName: "NEW" },
-    awayTeam: { id: "7", name: "Liverpool", logo: "", shortName: "LIV" },
-    homeScore: 0,
-    awayScore: 1,
-    status: "live" as const,
-    date: "2024-01-11",
-    league: "English Premier League",
-  },
-  {
-    id: "5",
-    homeTeam: { id: "8", name: "Burnley", logo: "", shortName: "BUR" },
-    awayTeam: { id: "5", name: "Manchester City", logo: "", shortName: "MCI" },
-    homeScore: 0,
-    awayScore: 0,
-    status: "scheduled" as const,
-    date: "2024-01-11",
-    time: "23:00",
-    league: "English Premier League",
-  },
-  {
-    id: "6",
-    homeTeam: { id: "9", name: "Chelsea", logo: "", shortName: "CHE" },
-    awayTeam: { id: "10", name: "Southampton", logo: "", shortName: "SOU" },
-    homeScore: 0,
-    awayScore: 0,
-    status: "scheduled" as const,
-    date: "2024-01-11",
-    time: "23:00",
-    league: "English Premier League",
-  },
-];
+import { Skeleton } from "../ui/skeleton";
+import { useMatches } from "@/context/MatchesContext";
 
 export function Fixtures() {
-  const navigate = useNavigate();
+  const { groupedMatches, loading, error } = useMatches();
+  const hasMatches = Object.keys(groupedMatches).length > 0;
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -78,65 +15,89 @@ export function Fixtures() {
         <h1 className="hidden md:block text-2xl font-bold mb-8">Matches</h1>
 
         <DateSlider />
-
-        <div className="flex justify-start gap-3 md:gap-4 mb-8">
-          <div className="flex items-center gap-2 bg-primary text-black px-2 md:px-4 py-2 rounded-lg text-sm font-medium">
-            <span>All</span>
-            <Badge className="bg-black text-white text-xs">9</Badge>
-          </div>
-          <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
-            <Radio className="w-4 h-4" />
-            <span>Live</span>
-            <Badge className="bg-gray-600 text-white text-xs">4</Badge>
-          </div>
-          <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
-            <Heart className="w-4 h-4" />
-            <span>Favorites</span>
-            <Badge className="bg-gray-600 text-white text-xs">2</Badge>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="bg-muted px-6 py-4 rounded-lg">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-medium">UEFA Champions League</h2>
-              <ChevronRight
-                className="w-5 h-5 text-gray-400"
-                onClick={() => {
-                  navigate("/match/dgfefds");
-                }}
-              />
+        {loading ? (
+          <>
+            <div className="flex justify-start gap-3 md:gap-4 mb-8 ">
+              <Skeleton className="h-10 w-20" />
+              <Skeleton className="h-10 w-20" />
+              <Skeleton className="h-10 w-20" />
             </div>
-            <div className="space-y-3">
-              {mockMatches
-                .filter((m) => m.league === "UEFA Champions League")
-                .map((match) => (
-                  <div key={match.id} className="">
-                    <MatchCard match={match} />
+            <div className="space-y-6">
+              <Skeleton className="h-56 w-full" />
+              <Skeleton className="h-56 w-full" />
+            </div>
+          </>
+        ) : error ? (
+          <div className="flex justify-center items-center py-12">
+            <p className="text-destructive text-lg">
+              Error: {error || "Data Error, wait a bit and try again"}
+            </p>
+          </div>
+        ) : !hasMatches ? (
+          <div className="flex justify-center items-center py-12">
+            <p className="text-gray-400 text-lg">
+              No matches found for this date
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-start gap-3 md:gap-4 mb-8">
+              <div className="flex items-center gap-2 bg-primary text-black px-2 md:px-4 py-2 rounded-lg text-sm font-medium">
+                <span>All</span>
+                <Badge className="bg-black text-white text-xs">
+                  {" "}
+                  {Object.values(groupedMatches).flat().length}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
+                <Radio className="w-4 h-4" />
+                <span>Live</span>
+                <Badge className="bg-gray-600 text-white text-xs">
+                  {
+                    Object.values(groupedMatches)
+                      .flat()
+                      .filter((m) => m.status === "live").length
+                  }
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
+                <Heart className="w-4 h-4" />
+                <span>Favorites</span>
+                <Badge className="bg-gray-600 text-white text-xs">0</Badge>
+              </div>
+            </div>
+            <div className="space-y-6">
+              {Object.entries(groupedMatches).map(([league, matches]) => (
+                <div key={league} className="bg-muted px-6 py-4 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-medium">{league}</h2>
+                    {matches.length > 0 && (
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                    )}
                   </div>
-                ))}
-            </div>
-          </div>
 
-          <div className="bg-muted px-6 py-4 rounded-lg">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-medium">English Premier League</h2>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </div>
-            <div className="space-y-3">
-              {mockMatches
-                .filter((m) => m.league === "English Premier League")
-                .map((match) => (
-                  <div key={match.id} className="">
-                    <MatchCard
-                      match={match}
-                      showTime={match.status === "scheduled"}
-                    />
+                  <div className="space-y-3">
+                    {matches.length === 0 ? (
+                      <div className="flex justify-center items-center">
+                        <p className="text-gray-400 text-sm">
+                          No matches found
+                        </p>
+                      </div>
+                    ) : (
+                      matches.map((match) => (
+                        <MatchCard
+                          key={match.id}
+                          match={match}
+                          showTime={match.status === "scheduled"}
+                        />
+                      ))
+                    )}
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -2,12 +2,7 @@ import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarDays } from "lucide-react";
 import { Calendar } from "../ui/calendar";
-
-interface DatePickerProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  currentDate: Date;
-  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
-}
+import type { DatePickerProps } from "@/types";
 
 export const DatePicker = ({
   setOpen,

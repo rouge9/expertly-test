@@ -7,17 +7,18 @@ import { LeagueDropdown } from "./LeagueDropdown";
 import { navigationItems } from "@/lib/routes/navigationItems";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
+import { useMatches } from "@/context/MatchesContext";
 
 export function Header() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data, loading } = useHeaderOptions();
   const [selectedCountry, setSelectedCountry] = useState(data.countries[0]);
-  const [selectedSport, setSelectedSport] = useState(data.sports[0]);
-  const [selectedLeague, setSelectedLeague] = useState(data.leagues[0]);
   const [selectedYear, setSelectedYear] = useState("2024/25");
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { selectedSport, setSelectedSport, selectedLeague, setSelectedLeague } =
+    useMatches();
 
   const years = Array.from({ length: 10 }, (_, i) => {
     const year = currentYear - 5 + i;
