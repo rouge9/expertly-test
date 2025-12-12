@@ -12,22 +12,22 @@ import PageErrors from "../ErrorComponents/PageErrors";
 
 export function MatchDetails() {
   const { id } = useParams<{ id: string }>();
-  const { matchDetail, loading, error } = useMatchDetail(id || "");
+  const { matchDetail, loading, error, refetch } = useMatchDetail(id || "");
   const [activeTab, setActiveTab] = useState("events");
-  if (!matchDetail) return null;
-  if (error) return <PageErrors err={error} />;
+  if (error) return <PageErrors err={error} onRetry={refetch} />;
 
-  const timelineEvents = matchDetail.timeline
-    .slice()
-    .reverse()
-    .map((event) => ({
-      time: `${event.time}'`,
-      eventType: event.type.toLowerCase(),
-      homePlayer: event.team === "home" ? event.player : null,
-      awayPlayer: event.team === "away" ? event.player : null,
-      detail: event.detail,
-      isHome: event?.isHome,
-    }));
+  const timelineEvents =
+    matchDetail?.timeline
+      .slice()
+      .reverse()
+      .map((event) => ({
+        time: `${event.time}'`,
+        eventType: event.type.toLowerCase(),
+        homePlayer: event.team === "home" ? event.player : null,
+        awayPlayer: event.team === "away" ? event.player : null,
+        detail: event.detail,
+        isHome: event?.isHome,
+      })) || [];
 
   const homeCards = timelineEvents.filter(
     (event) => event.isHome && event.eventType === "card"
@@ -43,8 +43,6 @@ export function MatchDetails() {
 
   const homeCardCounts = getCardCounts(homeCards);
   const awayCardCounts = getCardCounts(awayCards);
-
-  console.log(matchDetail);
 
   return (
     <div className="bg-background min-h-screen text-white">
@@ -74,12 +72,12 @@ export function MatchDetails() {
                   <div className="relative">
                     <Avatar className="h-24 w-24">
                       <AvatarImage
-                        src={matchDetail.homeTeam.logo}
-                        alt={matchDetail.homeTeam.name}
+                        src={matchDetail?.homeTeam.logo}
+                        alt={matchDetail?.homeTeam.name}
                       />
                       <AvatarFallback>
                         <span className="text-white text-xs font-bold">
-                          {matchDetail.homeTeam.name.slice(0, 2)}
+                          {matchDetail?.homeTeam.name.slice(0, 2)}
                         </span>
                       </AvatarFallback>
                     </Avatar>
@@ -102,7 +100,7 @@ export function MatchDetails() {
                 </div>
                 <div className="text-center">
                   <div className="text-muted-foreground text-sm mb-2">
-                    {formatDate(matchDetail?.date)}
+                    {matchDetail?.date && formatDate(matchDetail?.date)}
                   </div>
                   <div className="lg:text-4xl text-xl font-bold mb-2">
                     <span>
@@ -138,12 +136,12 @@ export function MatchDetails() {
                   <div className="relative">
                     <Avatar className="h-24 w-24">
                       <AvatarImage
-                        src={matchDetail.awayTeam.logo}
-                        alt={matchDetail.awayTeam.name}
+                        src={matchDetail?.awayTeam.logo}
+                        alt={matchDetail?.awayTeam.name}
                       />
                       <AvatarFallback>
                         <span className="text-foreground text-xs font-bold">
-                          {matchDetail.awayTeam.name.slice(0, 2)}
+                          {matchDetail?.awayTeam.name.slice(0, 2)}
                         </span>
                       </AvatarFallback>
                     </Avatar>
