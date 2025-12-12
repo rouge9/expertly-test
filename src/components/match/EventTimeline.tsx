@@ -15,7 +15,7 @@ interface EventTimelineProps {
   events: EventItem[];
 }
 
-function getEventIcon(eventType?: string, card?: "Yellow Card" | "Red Card") {
+function getEventIcon(eventType?: string, card?: string) {
   switch (eventType) {
     case "subst":
       return <Repeat2 className="w-5 h-5 text-primary" />;

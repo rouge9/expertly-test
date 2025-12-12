@@ -5,15 +5,13 @@ import { useParams } from "react-router-dom";
 import useMatchDetail from "@/hooks/useMatchDetail";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatDate } from "@/lib/utils";
+import { Skeleton } from "../ui/skeleton";
 
 export function MatchDetails() {
   const { id } = useParams<{ id: string }>();
   const { matchDetail, loading, error } = useMatchDetail(id || "");
-  if (loading) return <div>Loading match details...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!matchDetail) return <div>Match not found</div>;
-
-  console.log(matchDetail);
 
   const timelineEvents = matchDetail.timeline
     .slice()
@@ -27,124 +25,184 @@ export function MatchDetails() {
       isHome: event?.isHome,
     }));
 
+  const homeCards = timelineEvents.filter(
+    (event) => event.isHome && event.eventType === "card"
+  );
+  const awayCards = timelineEvents.filter(
+    (event) => !event.isHome && event.eventType === "card"
+  );
+
+  const getCardCounts = (cards: any[]) => ({
+    yellowCards: cards.filter((card) => card.detail === "Yellow Card").length,
+    redCards: cards.filter((card) => card.detail === "Red Card").length,
+  });
+
+  const homeCardCounts = getCardCounts(homeCards);
+  const awayCardCounts = getCardCounts(awayCards);
+
+  console.log(awayCardCounts);
+
   return (
     <div className="bg-background min-h-screen text-white">
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="bg-muted px-6 pt-6 rounded-lg">
-          <div
-            className="flex items-center gap-3 mb-6"
-            onClick={() => {
-              window.history.back();
-            }}
-          >
-            <ArrowLeft className="w-6 h-6 cursor-pointer hover:text-green-400" />
-            <span className="text-gray-300">{matchDetail?.league}</span>
+      {loading ? (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="space-y-6">
+            <Skeleton className="h-56 w-full" />
+            <Skeleton className="h-96 w-full" />
           </div>
+        </div>
+      ) : error ? (
+        <div className="flex justify-center items-center py-12">
+          <p className="text-destructive text-lg">
+            Error: {error || "Data Error, wait a bit and try again"}
+          </p>
+        </div>
+      ) : (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="bg-muted px-6 pt-4 rounded-lg">
+            <div
+              className="flex items-center gap-3 mb-6"
+              onClick={() => {
+                window.history.back();
+              }}
+            >
+              <ArrowLeft className="w-6 h-6 cursor-pointer hover:text-primary" />
+              <span className="text-gray-300">{matchDetail?.league}</span>
+            </div>
 
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center lg:gap-28 gap-8 mb-4">
-              <div className="flex flex-col gap-4">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage
-                    src={matchDetail.homeTeam.logo}
-                    alt={matchDetail.homeTeam.name}
-                  />
-                  <AvatarFallback>
-                    <span className="text-white text-xs font-bold">
-                      {matchDetail.homeTeam.name.slice(0, 2)}
+            <div className="text-center mb-8 ">
+              <div className="flex items-center justify-center lg:gap-28 gap-8 mb-4">
+                <div className="flex flex-col gap-4 items-center">
+                  <div className="relative">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage
+                        src={matchDetail.homeTeam.logo}
+                        alt={matchDetail.homeTeam.name}
+                      />
+                      <AvatarFallback>
+                        <span className="text-white text-xs font-bold">
+                          {matchDetail.homeTeam.name.slice(0, 2)}
+                        </span>
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -top-2 -right-2 flex gap-1">
+                      {homeCardCounts.yellowCards > 0 && (
+                        <div className="bg-yellow-200 text-black text-xs w-4 h-5  flex items-center justify-center font-bold">
+                          {homeCardCounts.yellowCards}
+                        </div>
+                      )}
+                      {homeCardCounts.redCards > 0 && (
+                        <div className="bg-red-500 text-white text-xs w-4 h-5  flex items-center justify-center font-bold">
+                          {homeCardCounts.redCards}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-sm md:text-lg font-semibold">
+                    {matchDetail?.homeTeam?.name}
+                  </span>
+                </div>
+                <div className="text-center">
+                  <div className="text-muted-foreground text-sm mb-2">
+                    {formatDate(matchDetail?.date)}
+                  </div>
+                  <div className="lg:text-4xl text-xl font-bold mb-2">
+                    <span>
+                      {matchDetail?.status !== "Not Started" &&
+                        matchDetail?.awayScore}
                     </span>
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-lg font-semibold">
-                  {matchDetail?.homeTeam?.name}
-                </span>
-              </div>
-              <div className="text-center">
-                <div className="text-muted-foreground text-sm mb-2">
-                  {formatDate(matchDetail?.date)}
-                </div>
-                <div className="lg:text-4xl text-xl font-bold mb-2">
-                  <span>
-                    {matchDetail?.status !== "Not Started" &&
-                      matchDetail?.awayScore}
-                  </span>
-                  <span className="mx-2">
-                    {matchDetail?.status === "Not Started" ? "vs" : "-"}
-                  </span>
-                  <span>
-                    {matchDetail?.status !== "Not Started" &&
-                      matchDetail?.homeScore}
-                  </span>
-                </div>
-                <Badge
-                  variant={
-                    matchDetail?.status === "Not Started"
-                      ? "outline"
+                    <span className="mx-2">
+                      {matchDetail?.status === "Not Started" ? "vs" : "-"}
+                    </span>
+                    <span>
+                      {matchDetail?.status !== "Not Started" &&
+                        matchDetail?.homeScore}
+                    </span>
+                  </div>
+                  <Badge
+                    variant={
+                      matchDetail?.status === "Not Started"
+                        ? "outline"
+                        : matchDetail?.status === "Match Finished"
+                        ? "destructive"
+                        : "default"
+                    }
+                    className="text-xs rounded-sm"
+                  >
+                    {matchDetail?.status === "Not Started"
+                      ? "Scheduled"
                       : matchDetail?.status === "Match Finished"
-                      ? "destructive"
-                      : "default"
-                  }
-                  className="text-xs rounded-xl"
-                >
-                  {matchDetail?.status === "Not Started"
-                    ? "Scheduled"
-                    : matchDetail?.status === "Match Finished"
-                    ? "Finished"
-                    : "Live"}
-                </Badge>
-              </div>
-              <div className="flex flex-col gap-4">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage
-                    src={matchDetail.awayTeam.logo}
-                    alt={matchDetail.awayTeam.name}
-                  />
-                  <AvatarFallback>
-                    <span className="text-foreground text-xs font-bold">
-                      {matchDetail.awayTeam.name.slice(0, 2)}
-                    </span>
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-lg font-semibold">
-                  {matchDetail?.awayTeam?.name}
-                </span>
+                      ? "Finished"
+                      : "Live"}
+                  </Badge>
+                </div>
+                <div className="relative">
+                  <Avatar className="h-24 w-24">
+                    <AvatarImage
+                      src={matchDetail.awayTeam.logo}
+                      alt={matchDetail.awayTeam.name}
+                    />
+                    <AvatarFallback>
+                      <span className="text-foreground text-xs font-bold">
+                        {matchDetail.awayTeam.name.slice(0, 2)}
+                      </span>
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -top-2 -left-2 flex gap-1">
+                    {awayCardCounts.yellowCards > 0 && (
+                      <div className="bg-yellow-200 text-black text-xs h-5 w-4 flex items-center justify-center font-bold">
+                        {awayCardCounts.yellowCards}
+                      </div>
+                    )}
+                    {awayCardCounts.redCards > 0 && (
+                      <div className="bg-red-500 text-white text-xs h-5 w-4 flex items-center justify-center font-bold">
+                        {awayCardCounts.redCards}
+                      </div>
+                    )}
+                  </div>
+
+                  <span className="text-sm md:text-lg font-semibold">
+                    {matchDetail?.awayTeam?.name}
+                  </span>
+                </div>
               </div>
             </div>
+
+            <nav className="flex justify-center gap-8 mb-8 overflow-hidden">
+              <a href="#" className="pb-3 text-gray-400 hover:text-white">
+                Details
+              </a>
+              <a href="#" className="pb-3 text-gray-400 hover:text-white">
+                Odds
+              </a>
+              <a href="#" className="pb-3 text-gray-400 hover:text-white">
+                Lineups
+              </a>
+              <a href="#" className="pb-3  border-b-2 border-green-400">
+                Events
+              </a>
+              <a href="#" className="pb-3 text-gray-400 hover:text-white">
+                Stats
+              </a>
+              <a href="#" className="pb-3 text-gray-400 hover:text-white">
+                Standings
+              </a>
+            </nav>
           </div>
 
-          <nav className="flex justify-center gap-8 mb-8 overflow-hidden">
-            <a href="#" className="pb-3 text-gray-400 hover:text-white">
-              Details
-            </a>
-            <a href="#" className="pb-3 text-gray-400 hover:text-white">
-              Odds
-            </a>
-            <a href="#" className="pb-3 text-gray-400 hover:text-white">
-              Lineups
-            </a>
-            <a href="#" className="pb-3  border-b-2 border-green-400">
-              Events
-            </a>
-            <a href="#" className="pb-3 text-gray-400 hover:text-white">
-              Stats
-            </a>
-            <a href="#" className="pb-3 text-gray-400 hover:text-white">
-              Standings
-            </a>
-          </nav>
-        </div>
+          <div className="space-y-4 bg-muted rounded-lg p-6">
+            <h3 className="text-lg font-medium mb-4">Events</h3>
+            <div className="flex flex-col justify-center items-center">
+              <div className="text-center text-gray-400 text-sm mb-4">
+                Fulltime{" "}
+                {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
+              </div>
 
-        <div className="space-y-4 bg-muted rounded-lg p-6">
-          <h3 className="text-lg font-medium mb-4">Events</h3>
-          <div className="flex flex-col justify-center items-center">
-            <div className="text-center text-gray-400 text-sm mb-4">
-              Fulltime {`${matchDetail?.homeScore} - ${matchDetail?.awayScore}`}
+              <EventTimeline events={timelineEvents} />
             </div>
-
-            <EventTimeline events={timelineEvents} />
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

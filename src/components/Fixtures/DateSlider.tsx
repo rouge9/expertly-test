@@ -68,7 +68,7 @@ export const DateSlider = () => {
   };
   return (
     <>
-      <div className="hidden md:flex items-center justify-between gap-4 mb-8 bg-muted py-4 rounded-lg px-4">
+      <div className="hidden md:flex items-center justify-between gap-4 mb-8 bg-muted py-5 rounded-lg px-4">
         <ChevronLeft
           onClick={handlePrevDay}
           className="w-5 h-5 text-gray-400 cursor-pointer hover:text-white"
