@@ -2,7 +2,7 @@ import { Fixtures } from "@/components/Fixtures/Fixtures";
 import useFetchLiveMatches from "@/hooks/useFetchLiveMatches";
 
 export const Live = () => {
-  const { groupedMatches, loading, error } = useFetchLiveMatches(
+  const { groupedMatches, loading, error, refetch } = useFetchLiveMatches(
     "Soccer",
     20000
   );
@@ -12,6 +12,7 @@ export const Live = () => {
       loading={loading}
       error={error}
       isLive={true}
+      refetch={refetch}
     />
   );
 };

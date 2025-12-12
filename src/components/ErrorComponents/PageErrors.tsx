@@ -1,11 +1,26 @@
-const PageErrors = ({ err }: { err: string | null }) => {
+import { RotateCcw } from "lucide-react";
+import { Button } from "../ui/button";
+
+interface PageErrorProps {
+  err: string | null;
+  onRetry?: () => void;
+}
+
+const PageErrors = ({ err, onRetry }: PageErrorProps) => {
   return (
     <div className="bg-background text-white flex justify-center items-center">
       <div className="max-w-4xl mx-auto px-4 py-6 gap-10 flex flex-col justify-center items-center">
-        <img src="/assets/server.png" alt="" className="" />
+        <img src="/assets/server.png" alt="" className=" w-1/2 h-1/2" />
         <p className="text-lg font-bold text-destructive">
-          Error loading this page {err}
+          Error loading this page: {err}
         </p>
+        <Button
+          onClick={onRetry}
+          className="bg-muted text-white rounded-full cursor-pointer"
+        >
+          <RotateCcw />
+          Retry
+        </Button>
       </div>
     </div>
   );

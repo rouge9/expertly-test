@@ -15,6 +15,7 @@ export function Fixtures({
   loading = false,
   error = null,
   isLive = true,
+  refetch,
 }: FixturesProps) {
   const param = useLocation();
   const hasMatches = Object.keys(groupedMatches).length > 0;
@@ -54,7 +55,7 @@ export function Fixtures({
     return allMatches.filter((m) => favorites.includes(m.id));
   }, [allMatches, favoritesUpdate]);
 
-  if (error) return <PageErrors err={error} />;
+  if (error) return <PageErrors err={error} onRetry={refetch} />;
 
   return (
     <div className="bg-background min-h-screen text-foreground">

@@ -101,4 +101,5 @@ export interface FixturesProps {
   loading?: boolean;
   error?: string | null;
   isLive?: boolean;
+  refetch: () => void;
 }

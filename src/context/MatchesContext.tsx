@@ -24,7 +24,6 @@ export const MatchesProvider = ({ children }: { children: ReactNode }) => {
     retry,
   } = useFetchMatches(formattedDate, selectedSport?.name);
 
-  // Filter by country first, then by league
   const countryFilteredMatches = selectedCountry
     ? Object.fromEntries(
         Object.entries(allMatches)

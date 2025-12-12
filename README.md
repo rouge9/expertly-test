@@ -55,7 +55,7 @@ npm run build
 - **Live Matches**: Real-time football match updates and scores
 - **Match Fixtures**: Browse matches by date with interactive date picker
 - **Match Details**: Comprehensive match information including lineups, events, and statistics
-- **Filter Matches**: Simple and easy way to filter matches by sport, leauge, year
+- **Filter Matches**: Simple and easy way to filter matches by sport, leauge, year and country
 - **Responsive Design**: Modern UI with Tailwind CSS and Radix UI components
 
 ---
@@ -92,7 +92,6 @@ npm run build
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
 
 ---
 

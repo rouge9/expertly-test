@@ -6,7 +6,7 @@ export const PageNotFound = () => {
   return (
     <div className="bg-background text-white flex justify-center items-center">
       <div className="max-w-4xl mx-auto px-4 py-6 gap-10 flex flex-col items-center">
-        <img src="/assets/error-404.png" alt="" />
+        <img src="/assets/error-404.png" alt="" className="h-1/2 w-1/2" />
         <p className="text-muted-foreground">
           The page you are looking for does not exist.
         </p>
