@@ -90,3 +90,10 @@ export type UseFetchMatchesResult = {
   refetch: () => void;
   retry: () => void;
 };
+
+export interface FixturesProps {
+  groupedMatches?: GroupedMatches;
+  loading?: boolean;
+  error?: string | null;
+  isLive?: boolean;
+}

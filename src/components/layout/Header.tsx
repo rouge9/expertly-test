@@ -141,7 +141,7 @@ export function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <nav className="xl:hidden border-t border-primary/20 bg-primary/50 backdrop-blur">
+        <nav className="xl:hidden border-t border-primary/20 bg-primary/50 backdrop-blur absolute top-full left-0 right-0">
           <div className="flex flex-col gap-2 px-4 py-3">
             {navigationItems.map((item) => (
               <Link

@@ -17,3 +17,7 @@ export const LOOKUP_EVENT = `${
 export const LOOKUP_TIMELINE = `${
   import.meta.env.VITE_BASE_URL
 }/lookuptimeline.php?id=`;
+
+export const LIVE_EVENTS_URL = `${
+  import.meta.env.VITE_BASE_URL
+}/liveevents.php`;

@@ -1,3 +1,5 @@
+import ComingSoon from "@/components/comingsoon/ComingSoon";
+
 export const Comparison = () => {
-  return <div>Comparison</div>;
+  return <ComingSoon />;
 };

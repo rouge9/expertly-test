@@ -39,6 +39,7 @@ function getEventIcon(eventType?: string, card?: string) {
 }
 
 export default function EventTimeline({ events }: EventTimelineProps) {
+  console.log(events);
   return (
     <div className="space-y-6">
       {events.map((event, idx) => (

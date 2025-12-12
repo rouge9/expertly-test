@@ -19,7 +19,9 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
         return <span className="px-2 py-1 text-destructive">FT</span>;
       default:
         return showTime && match.time ? (
-          <span className="text-gray-400 text-sm">{match.time}</span>
+          <span className="text-gray-400 text-sm">
+            {match.time.slice(0, 5)}
+          </span>
         ) : null;
     }
   };

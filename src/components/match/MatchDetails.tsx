@@ -10,8 +10,7 @@ import { Skeleton } from "../ui/skeleton";
 export function MatchDetails() {
   const { id } = useParams<{ id: string }>();
   const { matchDetail, loading, error } = useMatchDetail(id || "");
-  if (error) return <div>Error: {error}</div>;
-  if (!matchDetail) return <div>Match not found</div>;
+  if (!matchDetail) return null;
 
   const timelineEvents = matchDetail.timeline
     .slice()
@@ -39,8 +38,6 @@ export function MatchDetails() {
 
   const homeCardCounts = getCardCounts(homeCards);
   const awayCardCounts = getCardCounts(awayCards);
-
-  console.log(awayCardCounts);
 
   return (
     <div className="bg-background min-h-screen text-white">
@@ -192,14 +189,27 @@ export function MatchDetails() {
 
           <div className="space-y-4 bg-muted rounded-lg p-6">
             <h3 className="text-lg font-medium mb-4">Events</h3>
-            <div className="flex flex-col justify-center items-center">
-              <div className="text-center text-gray-400 text-sm mb-4">
-                Fulltime{" "}
-                {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
+            {matchDetail?.status === "Not Started" ? (
+              <div className="flex flex-col justify-center items-center">
+                <span className="text-gray-400 text-sm mb-4">
+                  {`Match schduled for ${matchDetail?.date} at ${matchDetail?.time}`}
+                </span>
               </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center">
+                <div className="text-center text-gray-400 text-sm mb-4">
+                  Fulltime{" "}
+                  {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
+                </div>
 
-              <EventTimeline events={timelineEvents} />
-            </div>
+                <EventTimeline events={timelineEvents} />
+                <div className="flex justify-center items-center">
+                  <span className="text-sm text-muted-foreground whitespace-nowrap px-4">
+                    {`Kick Off - ${matchDetail?.time.slice(0, 5)}`}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
