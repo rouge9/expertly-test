@@ -11,6 +11,9 @@ export const MatchesProvider = ({ children }: { children: ReactNode }) => {
   const [selectedLeague, setSelectedLeague] = useState<HeaderOption | null>(
     null
   );
+  const [selectedCountry, setSelectedCountry] = useState<HeaderOption | null>(
+    null
+  );
 
   const formattedDate = currentDate.toISOString().split("T")[0];
   const {
@@ -21,9 +24,24 @@ export const MatchesProvider = ({ children }: { children: ReactNode }) => {
     retry,
   } = useFetchMatches(formattedDate, selectedSport?.name);
 
-  const groupedMatches = selectedLeague
-    ? { [selectedLeague.name]: allMatches[selectedLeague.name] || [] }
+  // Filter by country first, then by league
+  const countryFilteredMatches = selectedCountry
+    ? Object.fromEntries(
+        Object.entries(allMatches)
+          .map(([league, matches]) => [
+            league,
+            matches.filter((match) => match.country === selectedCountry.name),
+          ])
+          .filter(([, matches]) => matches.length > 0)
+      )
     : allMatches;
+
+  const groupedMatches = selectedLeague
+    ? {
+        [selectedLeague.name]:
+          countryFilteredMatches[selectedLeague.name] || [],
+      }
+    : countryFilteredMatches;
 
   return (
     <MatchesContext.Provider
@@ -34,6 +52,8 @@ export const MatchesProvider = ({ children }: { children: ReactNode }) => {
         setSelectedSport,
         selectedLeague,
         setSelectedLeague,
+        selectedCountry,
+        setSelectedCountry,
         groupedMatches,
         loading,
         error,

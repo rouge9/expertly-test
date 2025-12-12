@@ -52,7 +52,6 @@ const useFetchLiveMatches = (
 
       const events = response.data?.events || [];
 
-      // Filter for live matches only
       const liveEvents = events.filter((event) => {
         const status = normalizeStatus(event.strStatus);
         return status === "live";
@@ -79,6 +78,7 @@ const useFetchLiveMatches = (
           date: event.dateEvent,
           time: event.strTime,
           league: event.strLeague,
+          country: event.strCountry,
         })
       );
     },

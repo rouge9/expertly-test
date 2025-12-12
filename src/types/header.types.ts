@@ -44,7 +44,7 @@ export type UseHeaderOptionsResult = {
 export type HeaderDropdownProps = {
   options: HeaderOption[];
   selected?: HeaderOption | null;
-  onSelect: (option: HeaderOption) => void;
+  onSelect: (option: HeaderOption | null) => void;
   fallbackIcon: string;
   fallbackText: string;
   loading?: boolean;

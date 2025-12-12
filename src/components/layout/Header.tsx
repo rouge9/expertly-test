@@ -13,7 +13,6 @@ export function Header() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data, loading } = useHeaderOptions();
-  const [selectedCountry, setSelectedCountry] = useState(data.countries[0]);
   const [selectedYear, setSelectedYear] = useState("2024/25");
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -23,6 +22,8 @@ export function Header() {
     selectedLeague,
     setSelectedLeague,
     setCurrentDate,
+    selectedCountry,
+    setSelectedCountry,
   } = useMatches();
 
   const years = Array.from({ length: 10 }, (_, i) => {

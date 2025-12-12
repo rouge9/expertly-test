@@ -5,9 +5,11 @@ export type MatchesContextType = {
   currentDate: Date;
   setCurrentDate: (date: Date) => void;
   selectedSport: HeaderOption | null;
-  setSelectedSport: (sport: HeaderOption) => void;
+  setSelectedSport: (sport: HeaderOption | null) => void;
   selectedLeague: HeaderOption | null;
   setSelectedLeague: (league: HeaderOption | null) => void;
+  selectedCountry: HeaderOption | null;
+  setSelectedCountry: (country: HeaderOption | null) => void;
   groupedMatches: { [league: string]: any[] };
   loading: boolean;
   error: string | null;
@@ -49,6 +51,7 @@ export type ApiMatch = {
   strAwayTeamBadge: string;
   idHomeTeam: string;
   idAwayTeam: string;
+  strCountry: string;
 };
 
 export type MatchesApiResponse = {
@@ -77,6 +80,7 @@ export type NormalizedMatch = {
   date: string;
   time?: string;
   league: string;
+  country: string;
 };
 
 export type GroupedMatches = {

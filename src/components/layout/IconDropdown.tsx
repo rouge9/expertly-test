@@ -37,6 +37,12 @@ export function IconDropdown({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 max-h-56 border-none">
+        <DropdownMenuItem
+          onClick={() => onSelect(null)}
+          className="flex items-center gap-2"
+        >
+          <span>ALL</span>
+        </DropdownMenuItem>
         {options.map((option) => (
           <DropdownMenuItem
             key={option.id}
