@@ -9,6 +9,7 @@ import { Statistics } from "./pages/Statistics";
 import { Venues } from "./pages/Venues";
 import { Live } from "./pages/Live";
 import { MatchesProvider } from "./context/MatchesContext";
+import { PageNotFound } from "./components/ErrorComponents/PageNotFound";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="comparison" element={<Comparison />} />
             <Route path="statistics" element={<Statistics />} />
             <Route path="venues" element={<Venues />} />
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
       </Router>

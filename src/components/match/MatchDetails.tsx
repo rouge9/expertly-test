@@ -6,11 +6,16 @@ import useMatchDetail from "@/hooks/useMatchDetail";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
+import { useState } from "react";
+import { tabs } from "@/lib/routes/navigationItems";
+import PageErrors from "../ErrorComponents/PageErrors";
 
 export function MatchDetails() {
   const { id } = useParams<{ id: string }>();
   const { matchDetail, loading, error } = useMatchDetail(id || "");
+  const [activeTab, setActiveTab] = useState("events");
   if (!matchDetail) return null;
+  if (error) return <PageErrors err={error} />;
 
   const timelineEvents = matchDetail.timeline
     .slice()
@@ -47,12 +52,6 @@ export function MatchDetails() {
             <Skeleton className="h-56 w-full" />
             <Skeleton className="h-96 w-full" />
           </div>
-        </div>
-      ) : error ? (
-        <div className="flex justify-center items-center py-12">
-          <p className="text-destructive text-lg">
-            Error: {error || "Data Error, wait a bit and try again"}
-          </p>
         </div>
       ) : (
         <div className="max-w-4xl mx-auto px-4 py-6">
@@ -133,31 +132,32 @@ export function MatchDetails() {
                       : "Live"}
                   </Badge>
                 </div>
-                <div className="relative">
-                  <Avatar className="h-24 w-24">
-                    <AvatarImage
-                      src={matchDetail.awayTeam.logo}
-                      alt={matchDetail.awayTeam.name}
-                    />
-                    <AvatarFallback>
-                      <span className="text-foreground text-xs font-bold">
-                        {matchDetail.awayTeam.name.slice(0, 2)}
-                      </span>
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute -top-2 -left-2 flex gap-1">
-                    {awayCardCounts.yellowCards > 0 && (
-                      <div className="bg-yellow-200 text-black text-xs h-5 w-4 flex items-center justify-center font-bold">
-                        {awayCardCounts.yellowCards}
-                      </div>
-                    )}
-                    {awayCardCounts.redCards > 0 && (
-                      <div className="bg-red-500 text-white text-xs h-5 w-4 flex items-center justify-center font-bold">
-                        {awayCardCounts.redCards}
-                      </div>
-                    )}
+                <div className="flex flex-col gap-4 items-center">
+                  <div className="relative">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage
+                        src={matchDetail.awayTeam.logo}
+                        alt={matchDetail.awayTeam.name}
+                      />
+                      <AvatarFallback>
+                        <span className="text-foreground text-xs font-bold">
+                          {matchDetail.awayTeam.name.slice(0, 2)}
+                        </span>
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -top-2 -left-2 flex gap-1">
+                      {awayCardCounts.yellowCards > 0 && (
+                        <div className="bg-yellow-200 text-black text-xs h-5 w-4 flex items-center justify-center font-bold">
+                          {awayCardCounts.yellowCards}
+                        </div>
+                      )}
+                      {awayCardCounts.redCards > 0 && (
+                        <div className="bg-red-500 text-white text-xs h-5 w-4 flex items-center justify-center font-bold">
+                          {awayCardCounts.redCards}
+                        </div>
+                      )}
+                    </div>
                   </div>
-
                   <span className="text-sm md:text-lg font-semibold">
                     {matchDetail?.awayTeam?.name}
                   </span>
@@ -165,49 +165,53 @@ export function MatchDetails() {
               </div>
             </div>
 
-            <nav className="flex justify-center gap-8 mb-8 overflow-hidden">
-              <a href="#" className="pb-3 text-gray-400 hover:text-white">
-                Details
-              </a>
-              <a href="#" className="pb-3 text-gray-400 hover:text-white">
-                Odds
-              </a>
-              <a href="#" className="pb-3 text-gray-400 hover:text-white">
-                Lineups
-              </a>
-              <a href="#" className="pb-3  border-b-2 border-green-400">
-                Events
-              </a>
-              <a href="#" className="pb-3 text-gray-400 hover:text-white">
-                Stats
-              </a>
-              <a href="#" className="pb-3 text-gray-400 hover:text-white">
-                Standings
-              </a>
+            <nav className="flex justify-center gap-8 mb-8 overflow-x-auto cursor-pointer">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`pb-3 ${
+                    activeTab === tab.id
+                      ? "border-b-2 border-green-400"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </nav>
           </div>
 
-          <div className="space-y-4 bg-muted rounded-lg p-6">
-            <h3 className="text-lg font-medium mb-4">Events</h3>
-            {matchDetail?.status === "Not Started" ? (
-              <div className="flex flex-col justify-center items-center">
-                <span className="text-gray-400 text-sm mb-4">
-                  {`Match schduled for ${matchDetail?.date} at ${matchDetail?.time}`}
-                </span>
-              </div>
-            ) : (
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-center text-gray-400 text-sm mb-4">
-                  Fulltime{" "}
-                  {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
-                </div>
-
-                <EventTimeline events={timelineEvents} />
-                <div className="flex justify-center items-center">
-                  <span className="text-sm text-muted-foreground whitespace-nowrap px-4">
-                    {`Kick Off - ${matchDetail?.time.slice(0, 5)}`}
-                  </span>
-                </div>
+          <div className="space-y-4 bg-muted rounded-lg p-6 cursor-pointer">
+            {activeTab === "events" && (
+              <>
+                <h3 className="text-lg font-medium mb-4">Events</h3>
+                {matchDetail?.status === "Not Started" ? (
+                  <div className="flex flex-col justify-center items-center">
+                    <span className="text-gray-400 text-sm mb-4">
+                      {`Match schduled for ${matchDetail?.date} at ${matchDetail?.time}`}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="text-center text-gray-400 text-sm mb-4">
+                      Fulltime{" "}
+                      {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
+                    </div>
+                    <EventTimeline events={timelineEvents} />
+                    <div className="flex justify-center items-center">
+                      <span className="text-sm text-muted-foreground whitespace-nowrap px-4">
+                        {`Kick Off - ${matchDetail?.time.slice(0, 5)}`}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+            {activeTab !== "events" && (
+              <div className="text-center text-gray-400 py-8">
+                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} content
+                coming soon
               </div>
             )}
           </div>

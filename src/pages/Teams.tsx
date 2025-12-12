@@ -1,4 +1,4 @@
-import ComingSoon from "@/components/comingsoon/ComingSoon";
+import ComingSoon from "@/components/ErrorComponents/ComingSoon";
 
 export const Teams = () => {
   return <ComingSoon />;

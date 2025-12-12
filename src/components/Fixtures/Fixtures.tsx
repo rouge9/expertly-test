@@ -5,6 +5,7 @@ import { DateSlider } from "./DateSlider";
 import { Skeleton } from "../ui/skeleton";
 import type { FixturesProps } from "@/types/match.types";
 import { useLocation } from "react-router-dom";
+import PageErrors from "../ErrorComponents/PageErrors";
 
 export function Fixtures({
   groupedMatches = {},
@@ -14,6 +15,8 @@ export function Fixtures({
 }: FixturesProps) {
   const param = useLocation();
   const hasMatches = Object.keys(groupedMatches).length > 0;
+
+  if (error) return <PageErrors err={error} />;
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -36,16 +39,10 @@ export function Fixtures({
               <Skeleton className="h-56 w-full" />
             </div>
           </>
-        ) : error ? (
-          <div className="flex justify-center items-center py-12">
-            <p className="text-destructive text-lg">
-              Error: {error || "Data Error, wait a bit and try again"}
-            </p>
-          </div>
         ) : !hasMatches ? (
           <div className="flex justify-center items-center py-12">
             <p className="text-gray-400 text-lg">
-              No matches found for this date
+              {`No ${isLive ? "live" : "upcoming"} matches found for this date`}
             </p>
           </div>
         ) : (
