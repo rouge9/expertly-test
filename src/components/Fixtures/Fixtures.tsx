@@ -1,4 +1,4 @@
-import { ChevronRight, Heart, Radio } from "lucide-react";
+import { Heart, Radio } from "lucide-react";
 import { MatchCard } from "../match/MatchCard";
 import { Badge } from "@/components/ui/badge";
 import { DateSlider } from "./DateSlider";
@@ -6,6 +6,9 @@ import { Skeleton } from "../ui/skeleton";
 import type { FixturesProps } from "@/types/match.types";
 import { useLocation } from "react-router-dom";
 import PageErrors from "../ErrorComponents/PageErrors";
+import { useMemo, useState } from "react";
+
+type FilterType = "all" | "live" | "favorites";
 
 export function Fixtures({
   groupedMatches = {},
@@ -15,6 +18,41 @@ export function Fixtures({
 }: FixturesProps) {
   const param = useLocation();
   const hasMatches = Object.keys(groupedMatches).length > 0;
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [favoritesUpdate, setFavoritesUpdate] = useState(0);
+
+  const handleFavoritesChange = () => {
+    setFavoritesUpdate((prev) => prev + 1);
+  };
+
+  const filteredMatches = useMemo(() => {
+    if (activeFilter === "all") return groupedMatches;
+
+    const filtered: typeof groupedMatches = {};
+    Object.entries(groupedMatches).forEach(([league, matches]) => {
+      const filteredLeagueMatches = matches.filter((match) => {
+        if (activeFilter === "live") return match.status === "live";
+        if (activeFilter === "favorites") {
+          const favorites = JSON.parse(
+            localStorage.getItem("favorites") || "[]"
+          );
+          return favorites.includes(match.id);
+        }
+        return true;
+      });
+      if (filteredLeagueMatches.length > 0) {
+        filtered[league] = filteredLeagueMatches;
+      }
+    });
+    return filtered;
+  }, [groupedMatches, activeFilter, favoritesUpdate]);
+
+  const allMatches = Object.values(groupedMatches).flat();
+  const liveMatches = allMatches.filter((m) => m.status === "live");
+  const favoriteMatches = useMemo(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    return allMatches.filter((m) => favorites.includes(m.id));
+  }, [allMatches, favoritesUpdate]);
 
   if (error) return <PageErrors err={error} />;
 
@@ -49,60 +87,94 @@ export function Fixtures({
           <>
             {!isLive && (
               <div className="flex justify-start gap-3 md:gap-4 mb-8">
-                <div className="flex items-center gap-2 bg-primary text-black px-2 md:px-4 py-2 rounded-lg text-sm font-medium">
+                <div
+                  className={`flex items-center gap-2 px-2 md:px-4 py-2 rounded-lg text-sm font-medium cursor-pointer ${
+                    activeFilter === "all"
+                      ? "bg-primary text-black"
+                      : "bg-gray-700 text-white"
+                  }`}
+                  onClick={() => setActiveFilter("all")}
+                >
                   <span>All</span>
-                  <Badge className="bg-black text-white text-xs">
-                    {" "}
-                    {Object.values(groupedMatches).flat().length}
+                  <Badge
+                    className={
+                      activeFilter === "all"
+                        ? "bg-black text-white text-xs"
+                        : "bg-gray-600 text-white text-xs"
+                    }
+                  >
+                    {allMatches.length}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
+                <div
+                  className={`flex items-center gap-2 px-2 md:px-4 py-2 rounded-lg text-sm cursor-pointer ${
+                    activeFilter === "live"
+                      ? "bg-primary text-black"
+                      : "bg-gray-700 text-white"
+                  }`}
+                  onClick={() => setActiveFilter("live")}
+                >
                   <Radio className="w-4 h-4" />
                   <span>Live</span>
-                  <Badge className="bg-gray-600 text-white text-xs">
-                    {
-                      Object.values(groupedMatches)
-                        .flat()
-                        .filter((m) => m.status === "live").length
+                  <Badge
+                    className={
+                      activeFilter === "live"
+                        ? "bg-black text-white text-xs"
+                        : "bg-gray-600 text-white text-xs"
                     }
+                  >
+                    {liveMatches.length}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2 bg-gray-700 text-white px-2 md:px-4 py-2 rounded-lg text-sm">
+                <div
+                  className={`flex items-center gap-2 px-2 md:px-4 py-2 rounded-lg text-sm cursor-pointer ${
+                    activeFilter === "favorites"
+                      ? "bg-primary text-black"
+                      : "bg-gray-700 text-white"
+                  }`}
+                  onClick={() => setActiveFilter("favorites")}
+                >
                   <Heart className="w-4 h-4" />
                   <span>Favorites</span>
-                  <Badge className="bg-gray-600 text-white text-xs">0</Badge>
+                  <Badge
+                    className={
+                      activeFilter === "favorites"
+                        ? "bg-black text-white text-xs"
+                        : "bg-gray-600 text-white text-xs"
+                    }
+                  >
+                    {favoriteMatches.length}
+                  </Badge>
                 </div>
               </div>
             )}
             <div className="space-y-6">
-              {Object.entries(groupedMatches).map(([league, matches]) => (
-                <div key={league} className="bg-muted px-6 py-4 rounded-lg">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-medium">{league}</h2>
-                    {matches.length > 0 && (
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
-                    )}
-                  </div>
+              {Object.keys(filteredMatches).length === 0 ? (
+                <div className="flex justify-center items-center py-12">
+                  <p className="text-gray-400 text-lg">
+                    No {activeFilter} matches found for this date
+                  </p>
+                </div>
+              ) : (
+                Object.entries(filteredMatches).map(([league, matches]) => (
+                  <div key={league} className="bg-muted px-6 py-4 rounded-lg">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-lg font-medium">{league}</h2>
+                    </div>
 
-                  <div className="space-y-3">
-                    {matches.length === 0 ? (
-                      <div className="flex justify-center items-center">
-                        <p className="text-gray-400 text-sm">
-                          No matches found
-                        </p>
-                      </div>
-                    ) : (
-                      matches.map((match) => (
+                    <div className="space-y-3">
+                      {matches.map((match) => (
                         <MatchCard
                           key={match.id}
                           match={match}
                           showTime={match.status === "scheduled"}
+                          onFavoriteChange={handleFavoritesChange}
                         />
-                      ))
-                    )}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </>
         )}

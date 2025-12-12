@@ -1,14 +1,47 @@
-import { MoreVertical } from "lucide-react";
+import { Heart, HeartOff, MoreVertical } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { cn } from "@/lib/utils";
 import type { MatchCardProps } from "@/types/match.types";
 import { useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { useEffect, useState } from "react";
 
-export function MatchCard({ match, showTime = false }: MatchCardProps) {
+export function MatchCard({
+  match,
+  showTime = false,
+  onFavoriteChange,
+}: MatchCardProps) {
   const navigate = useNavigate();
+
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setIsFavorite(favorites.includes(match.id));
+  }, [match.id]);
 
   const handleClick = () => {
     navigate(`/match/${match.id}`);
+  };
+
+  const toggleFavorite = () => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    let updatedFavorites;
+
+    if (isFavorite) {
+      updatedFavorites = favorites.filter((id: string) => id !== match.id);
+    } else {
+      updatedFavorites = [...favorites, match.id];
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setIsFavorite(!isFavorite);
+    onFavoriteChange?.();
   };
 
   const getStatusBadge = () => {
@@ -90,12 +123,26 @@ export function MatchCard({ match, showTime = false }: MatchCardProps) {
           </div>
         </div>
 
-        <MoreVertical
-          className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer"
-          onClick={() => {
-            console.log("clicked");
-          }}
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <MoreVertical className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={toggleFavorite}>
+              {isFavorite ? (
+                <>
+                  <HeartOff className="w-4 h-4" />
+                  Remove from Favorites
+                </>
+              ) : (
+                <>
+                  <Heart className="w-4 h-4" />
+                  Add to Favorites
+                </>
+              )}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

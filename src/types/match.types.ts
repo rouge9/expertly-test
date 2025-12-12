@@ -31,6 +31,7 @@ export interface Match {
 export interface MatchCardProps {
   match: Match;
   showTime?: boolean;
+  onFavoriteChange?: () => void;
 }
 
 export type ApiMatch = {
