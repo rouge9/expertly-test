@@ -1,26 +1,20 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
 import { DatePicker } from "./DatePicker";
 import { useMatches } from "@/context/MatchesContext";
 
 export const DateSlider = () => {
   const { currentDate, setCurrentDate } = useMatches();
-  const [open, setOpen] = useState(false);
 
   const handlePrevDay = () => {
-    setCurrentDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(newDate.getDate() - 1);
-      return newDate;
-    });
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() - 1);
+    setCurrentDate(newDate);
   };
 
   const handleNextDay = () => {
-    setCurrentDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(newDate.getDate() + 1);
-      return newDate;
-    });
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + 1);
+    setCurrentDate(newDate);
   };
 
   const formatDateForDisplay = (date: Date) => {
@@ -75,7 +69,6 @@ export const DateSlider = () => {
         />
         <div className="flex items-center gap-2">
           <DatePicker
-            setOpen={setOpen}
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
           />
@@ -119,11 +112,7 @@ export const DateSlider = () => {
             </span>
           );
         })}
-        <DatePicker
-          setOpen={setOpen}
-          currentDate={currentDate}
-          setCurrentDate={setCurrentDate}
-        />
+        <DatePicker currentDate={currentDate} setCurrentDate={setCurrentDate} />
       </div>
     </>
   );
