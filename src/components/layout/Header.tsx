@@ -17,8 +17,13 @@ export function Header() {
   const [selectedYear, setSelectedYear] = useState("2024/25");
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { selectedSport, setSelectedSport, selectedLeague, setSelectedLeague } =
-    useMatches();
+  const {
+    selectedSport,
+    setSelectedSport,
+    selectedLeague,
+    setSelectedLeague,
+    setCurrentDate,
+  } = useMatches();
 
   const years = Array.from({ length: 10 }, (_, i) => {
     const year = currentYear - 5 + i;
@@ -114,6 +119,8 @@ export function Header() {
                     size="sm"
                     onClick={() => {
                       setSelectedYear(year);
+                      const yearStart = parseInt(year.split("/")[0]);
+                      setCurrentDate(new Date(yearStart, 0, 1));
                       setIsPopoverOpen(false);
                     }}
                     className="justify-center"
