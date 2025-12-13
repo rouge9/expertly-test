@@ -47,7 +47,14 @@ export function MatchCard({
   const getStatusBadge = () => {
     switch (match.status) {
       case "live":
-        return <span className="px-2 py-1 text-primary">LIVE</span>;
+        return (
+          <div className="relative overflow-hidden">
+            <span className="px-2 py-1 text-primary text-sm">LIVE</span>
+            <div className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/20">
+              <div className="h-full w-4 bg-primary animate-[slide_2s_ease-in-out_infinite]" />
+            </div>
+          </div>
+        );
       case "finished":
         return <span className="px-2 py-1 text-destructive">FT</span>;
       default:

@@ -43,7 +43,6 @@ export function MatchDetails() {
 
   const homeCardCounts = getCardCounts(homeCards);
   const awayCardCounts = getCardCounts(awayCards);
-  console.log(matchDetail);
 
   return (
     <div className="bg-background min-h-screen text-white">
