@@ -61,13 +61,15 @@ const useFetchMatches = (
             id: event.idHomeTeam,
             name: event.strHomeTeam,
             logo: event.strHomeTeamBadge || "",
-            shortName: event.strHomeTeam.substring(0, 3).toUpperCase(),
+            shortName:
+              event.strHomeTeam?.substring(0, 3).toUpperCase() || "TBD",
           },
           awayTeam: {
             id: event.idAwayTeam,
             name: event.strAwayTeam,
             logo: event.strAwayTeamBadge || "",
-            shortName: event.strAwayTeam.substring(0, 3).toUpperCase(),
+            shortName:
+              event.strAwayTeam?.substring(0, 3).toUpperCase() || "TBD",
           },
           homeScore: parseInt(event.intHomeScore || "0"),
           awayScore: parseInt(event.intAwayScore || "0"),
