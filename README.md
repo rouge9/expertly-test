@@ -97,7 +97,7 @@ npm run build
 
 > **Note**: This application uses the free tier of TheSportsDB API. Some features may have limitations based on API availability.
 
-- **Live Matches**: Real-time football match updates and scores is only available on the paid plan. To simulate real-time updates, the / (root) page periodically (20seconds) refreshes the data, even though there are no actual changes.
+- **Live Matches**: Real-time football match updates and scores is only available on the paid plan. To simulate real-time updates, the / (root) page periodically (20seconds) refreshes the data, and the /matches and /match/:id page periodically (20seconds) refreshes the data if there is a live match and update the ui with the new data.
 
 - **The League Filter**: The sports league Filter on the header doesn't have an icon becuase the TheSportsDB /all_leagues.php API doesn't provide an icon. and it only response soccor leagues.
 
