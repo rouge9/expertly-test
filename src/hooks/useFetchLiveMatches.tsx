@@ -36,7 +36,12 @@ const useFetchLiveMatches = (
     const lowerStatus = status.toLowerCase();
     if (lowerStatus.includes("finished") || lowerStatus.includes("ft"))
       return "finished";
-    if (lowerStatus.includes("live") || lowerStatus.includes("'"))
+    if (
+      lowerStatus.includes("live") ||
+      lowerStatus.includes("'") ||
+      lowerStatus.includes("1h") ||
+      lowerStatus.includes("2h")
+    )
       return "live";
     return "scheduled";
   };

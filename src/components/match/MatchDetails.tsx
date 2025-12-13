@@ -198,10 +198,12 @@ export function MatchDetails() {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center">
-                    <div className="text-center text-gray-400 text-sm mb-4">
-                      Fulltime{" "}
-                      {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
-                    </div>
+                    {matchDetail?.status === "Match Finished" && (
+                      <div className="text-center text-gray-400 text-sm mb-4">
+                        Fulltime{" "}
+                        {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
+                      </div>
+                    )}
                     <EventTimeline events={timelineEvents} />
                     <div className="flex justify-center items-center">
                       <span className="text-sm text-muted-foreground whitespace-nowrap px-4">

@@ -20,6 +20,7 @@ const useFetchMatches = (
   const mountedRef = useRef<boolean>(true);
   const attemptsRef = useRef<number>(0);
   const abortRef = useRef<AbortController | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   const MAX_RETRIES = 2;
   const INITIAL_BACKOFF_MS = 1000;
@@ -39,7 +40,12 @@ const useFetchMatches = (
     const lowerStatus = status.toLowerCase();
     if (lowerStatus.includes("finished") || lowerStatus.includes("ft"))
       return "finished";
-    if (lowerStatus.includes("live") || lowerStatus.includes("'"))
+    if (
+      lowerStatus.includes("live") ||
+      lowerStatus.includes("'") ||
+      lowerStatus.includes("1h") ||
+      lowerStatus.includes("2h")
+    )
       return "live";
     return "scheduled";
   };
@@ -163,10 +169,37 @@ const useFetchMatches = (
     return () => {
       mountedRef.current = false;
       clearAbort();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
   }, [date, sport, performFetchWithRetries, clearAbort]);
 
-  // Group matches by league
+  useEffect(() => {
+    const hasLiveMatches = matches.some((match) => match.status === "live");
+    const isMatchesPage = window.location.pathname === "/matches";
+
+    if (hasLiveMatches && isMatchesPage) {
+      intervalRef.current = setInterval(() => {
+        if (mountedRef.current) {
+          attemptsRef.current = 0;
+          performFetchWithRetries(false);
+        }
+      }, 20000);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [matches, performFetchWithRetries]);
+
   const groupedMatches = matches.reduce((acc, match) => {
     if (!acc[match.league]) {
       acc[match.league] = [];
