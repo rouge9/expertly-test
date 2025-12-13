@@ -1,19 +1,7 @@
 import { UserCheck, Repeat2, Volleyball, Flag } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
-
-interface EventItem {
-  time: string;
-  awayPlayer?: string | null;
-  eventType?: string;
-  homePlayer?: string | null;
-  isHome?: boolean;
-  detail: string;
-}
-
-interface EventTimelineProps {
-  events: EventItem[];
-}
+import type { EventTimelineProps } from "@/types/matchDetails.types";
 
 function getEventIcon(eventType?: string, card?: string) {
   switch (eventType) {

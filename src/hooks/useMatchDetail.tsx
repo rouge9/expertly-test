@@ -1,92 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { LOOKUP_EVENT, LOOKUP_TIMELINE } from "@/lib/data/constant-api-path";
-
-type ApiMatchDetail = {
-  idEvent: string;
-  strEvent: string;
-  strHomeTeam: string;
-  strAwayTeam: string;
-  intHomeScore: string | null;
-  intAwayScore: string | null;
-  strStatus: string;
-  dateEvent: string;
-  strTime: string;
-  strLeague: string;
-  strHomeTeamBadge: string;
-  strAwayTeamBadge: string;
-  strVenue: string;
-  strCity: string;
-  strCountry: string;
-  strDescriptionEN: string;
-  idHomeTeam: string;
-  idAwayTeam: string;
-};
-
-type ApiTimelineEvent = {
-  idTimeline: string;
-  idEvent: string;
-  strTimeline: string;
-  strTimelineDetail: string;
-  strHome: string;
-  strEvent: string;
-  idPlayer: string;
-  strPlayer: string;
-  intTime: string;
-  strTeam: string;
-};
-
-type MatchDetailApiResponse = {
-  events: ApiMatchDetail[] | null;
-};
-
-type TimelineApiResponse = {
-  timeline: ApiTimelineEvent[] | null;
-};
-
-type TimelineEvent = {
-  id: string;
-  type: string;
-  detail: string;
-  time: number;
-  player: string;
-  team: "home" | "away";
-  teamName: string;
-  isHome: boolean;
-};
-
-type MatchDetail = {
-  id: string;
-  homeTeam: {
-    id: string;
-    name: string;
-    logo: string;
-  };
-  awayTeam: {
-    id: string;
-    name: string;
-    logo: string;
-  };
-  homeScore: number;
-  awayScore: number;
-  status: string;
-  date: string;
-  time: string;
-  league: string;
-  venue: string;
-  city: string;
-  country: string;
-  description: string;
-  timeline: TimelineEvent[];
-};
-
-type UseMatchDetailResult = {
-  matchDetail: MatchDetail | null;
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
-  retry: () => void;
-};
+import type {
+  MatchDetail,
+  MatchDetailApiResponse,
+  TimelineApiResponse,
+  TimelineEvent,
+  UseMatchDetailResult,
+} from "@/types/matchDetails.types";
 
 const useMatchDetail = (matchId: string): UseMatchDetailResult => {
   const [matchDetail, setMatchDetail] = useState<MatchDetail | null>(null);

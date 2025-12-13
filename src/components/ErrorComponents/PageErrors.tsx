@@ -1,10 +1,6 @@
 import { RotateCcw } from "lucide-react";
 import { Button } from "../ui/button";
-
-interface PageErrorProps {
-  err: string | null;
-  onRetry?: () => void;
-}
+import type { PageErrorProps } from "@/types";
 
 const PageErrors = ({ err, onRetry }: PageErrorProps) => {
   return (

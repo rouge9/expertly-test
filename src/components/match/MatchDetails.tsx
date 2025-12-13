@@ -43,6 +43,7 @@ export function MatchDetails() {
 
   const homeCardCounts = getCardCounts(homeCards);
   const awayCardCounts = getCardCounts(awayCards);
+  console.log(matchDetail);
 
   return (
     <div className="bg-background min-h-screen text-white">
@@ -105,14 +106,14 @@ export function MatchDetails() {
                   <div className="lg:text-4xl text-xl font-bold mb-2">
                     <span>
                       {matchDetail?.status !== "Not Started" &&
-                        matchDetail?.awayScore}
+                        matchDetail?.homeScore}
                     </span>
                     <span className="mx-2">
                       {matchDetail?.status === "Not Started" ? "vs" : "-"}
                     </span>
                     <span>
                       {matchDetail?.status !== "Not Started" &&
-                        matchDetail?.homeScore}
+                        matchDetail?.awayScore}
                     </span>
                   </div>
                   <Badge
@@ -120,6 +121,8 @@ export function MatchDetails() {
                       matchDetail?.status === "Not Started"
                         ? "outline"
                         : matchDetail?.status === "Match Finished"
+                        ? "destructive"
+                        : matchDetail?.status === "Match Abandoned"
                         ? "destructive"
                         : "default"
                     }
@@ -129,6 +132,8 @@ export function MatchDetails() {
                       ? "Scheduled"
                       : matchDetail?.status === "Match Finished"
                       ? "Finished"
+                      : matchDetail?.status === "Match Abandoned"
+                      ? "Abandoned"
                       : "Live"}
                   </Badge>
                 </div>
