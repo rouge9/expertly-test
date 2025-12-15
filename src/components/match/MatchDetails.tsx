@@ -201,7 +201,7 @@ export function MatchDetails() {
                     {matchDetail?.status === "Match Finished" && (
                       <div className="text-center text-gray-400 text-sm mb-4">
                         Fulltime{" "}
-                        {`${matchDetail?.awayScore} - ${matchDetail?.homeScore}`}
+                        {`${matchDetail?.homeScore} - ${matchDetail?.awayScore}`}
                       </div>
                     )}
                     <EventTimeline events={timelineEvents} />
