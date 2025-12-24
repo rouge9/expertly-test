@@ -8,6 +8,7 @@ import type {
   TimelineEvent,
   UseMatchDetailResult,
 } from "@/types/matchDetails.types";
+import type { HookError } from "@/types";
 
 const useMatchDetail = (matchId: string): UseMatchDetailResult => {
   const [matchDetail, setMatchDetail] = useState<MatchDetail | null>(null);
@@ -128,8 +129,8 @@ const useMatchDetail = (matchId: string): UseMatchDetailResult => {
           if (!mountedRef.current) return;
 
           if (
-            (err as any)?.name === "CanceledError" ||
-            (err as any)?.code === "ERR_CANCELED"
+            (err as HookError)?.name === "CanceledError" ||
+            (err as HookError)?.code === "ERR_CANCELED"
           ) {
             return;
           }
@@ -176,6 +177,7 @@ const useMatchDetail = (matchId: string): UseMatchDetailResult => {
   useEffect(() => {
     mountedRef.current = true;
     attemptsRef.current = 0;
+    // eslint-disable-next-line
     performFetchWithRetries(true);
 
     return () => {

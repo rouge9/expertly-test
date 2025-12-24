@@ -8,6 +8,7 @@ import type {
   UseFetchMatchesResult,
 } from "@/types/match.types";
 import { MATCH_EVENTS_DAY } from "@/lib/data/constant-api-path";
+import type { HookError } from "@/types";
 
 const useFetchLiveMatches = (
   sport: string = "Soccer",
@@ -108,8 +109,8 @@ const useFetchLiveMatches = (
         if (!mountedRef.current) return;
 
         if (
-          (err as any)?.name === "CanceledError" ||
-          (err as any)?.code === "ERR_CANCELED"
+          (err as HookError)?.name === "CanceledError" ||
+          (err as HookError)?.code === "ERR_CANCELED"
         ) {
           return;
         }
@@ -136,6 +137,7 @@ const useFetchLiveMatches = (
 
   useEffect(() => {
     mountedRef.current = true;
+    // eslint-disable-next-line
     performFetch(true);
 
     if (refreshInterval > 0) {

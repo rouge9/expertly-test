@@ -8,6 +8,7 @@ import type {
   NormalizedMatch,
   UseFetchMatchesResult,
 } from "@/types/match.types";
+import type { HookError } from "@/types";
 
 const useFetchMatches = (
   date: string,
@@ -118,8 +119,8 @@ const useFetchMatches = (
           if (!mountedRef.current) return;
 
           if (
-            (err as any)?.name === "CanceledError" ||
-            (err as any)?.code === "ERR_CANCELED"
+            (err as HookError)?.name === "CanceledError" ||
+            (err as HookError)?.code === "ERR_CANCELED"
           ) {
             return;
           }
@@ -164,6 +165,7 @@ const useFetchMatches = (
   useEffect(() => {
     mountedRef.current = true;
     attemptsRef.current = 0;
+    // eslint-disable-next-line
     performFetchWithRetries(true);
 
     return () => {

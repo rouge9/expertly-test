@@ -37,3 +37,8 @@ export interface PageErrorProps {
   err: string | null;
   onRetry?: () => void;
 }
+
+export interface HookError {
+  name: string;
+  code: string;
+}
